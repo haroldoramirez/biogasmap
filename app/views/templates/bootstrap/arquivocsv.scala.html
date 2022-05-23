@@ -1,0 +1,15 @@
+@(field: Field, label: String = "", placeholder: String = "", help: String = "")
+
+<div class="form-group @if(field.hasErrors) {has-error}">
+    <div class="input-group">
+        <span class="input-group-addon">
+            <span data-toggle="tooltip" title="" data-container=""><small>Apenas em formado CSV</small></span>
+        </span>
+        <input
+                id="@field.id"
+                type="file"
+                name="@field.name"
+                class="form-control my-form-control"
+                accept=".csv">
+    </div>
+</div>

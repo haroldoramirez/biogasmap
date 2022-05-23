@@ -1,0 +1,17 @@
+//User create developer
+CREATE USER  sa_biogasmap WITH ENCRYPTED PASSWORD 'senha_biogasmap';
+CREATE DATABASE biogasmap;
+ALTER DATABASE biogasmap OWNER TO sa_biogasmap;
+GRANT ALL PRIVILEGES ON DATABASE biogasmap to sa_biogasmap;
+
+
+//buscar todas as unidades
+select * from unidade;
+
+//update a unidade aprovado
+UPDATE unidade
+SET status = 2
+WHERE codigo = 1;
+
+//Apagar todas as unidades
+delete from unidade;

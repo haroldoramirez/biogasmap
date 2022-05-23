@@ -1,0 +1,159 @@
+.map {
+  width: 100%;
+  height:400px;
+}
+
+.ol-popup {
+  position: absolute;
+  background-color: white;
+  -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #cccccc;
+  bottom: 12px;
+  left: -50px;
+  min-width: 280px;
+}
+
+.ol-popup:after, .ol-popup:before {
+  top: 100%;
+  border: solid transparent;
+  content: "";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.ol-popup:after {
+  border-top-color: white;
+  border-width: 10px;
+  left: 48px;
+  margin-left: -10px;
+}
+
+.ol-popup:before {
+  border-top-color: #cccccc;
+  border-width: 11px;
+  left: 48px;
+  margin-left: -11px;
+}
+
+.ol-popup-closer {
+  text-decoration: none;
+  position: absolute;
+  top: 2px;
+  right: 8px;
+}
+
+.nao-pula-linha, .table-nao-pula-linha th, .table-nao-pula-linha td {
+	white-space: nowrap;
+}
+
+.my-btn-default {
+  background-color: #ffffff;
+  border-color: #eee;
+  color:#eee;
+  pointer-events: none;
+}
+
+.mt10 {
+	margin-top: 10px;
+}
+
+.mt15 {
+	margin-top: 5px;
+}
+
+.mt30 {
+	margin-top: 30px;
+}
+
+.modal.modal-wide .modal-dialog {
+  width: 80%;
+}
+
+.modal-wide .modal-body {
+  overflow-y: auto;
+}
+
+.valign {
+	vertical-align:middle !important;
+}
+
+.ui-widget.legenda-dialog {
+	opacity: 0.9;
+ 	filter: alpha(opacity=90); /* For IE8 and earlier */
+}
+
+.ui-dialog .ui-dialog-titlebar {
+    padding: .1em 1em;
+    position: relative;
+}
+
+.separador-legenda {
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+/* loading animations */
+.carregador {
+    position: fixed;
+    z-index: 99;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.carregador > img {
+    width: 500px;
+}
+
+.carregador.escondido {
+    animation: fadeOut 1s;
+    animation-fill-mode: forwards;
+}
+
+/* loading animations */
+.carregador-popup {
+    position: fixed;
+    z-index: 99;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.carregador-popup > img {
+    width: 300px;
+}
+
+.carregador-popup.escondido {
+    animation: fadeOut 1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeOut {
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+.avisos {
+    text-align: center;
+}
+
+.avisos > p {
+    margin: 10px 0 0px;
+}

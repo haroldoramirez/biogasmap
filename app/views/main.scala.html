@@ -1,0 +1,633 @@
+@(usuario : Usuario, estados : List[Estado])
+@lang() = @{Http.Context.current().lang().code()}
+@agente() = @{request().getHeader(Http.HeaderNames.USER_AGENT)}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+
+    @*Icones da aplicacao*@
+    <link rel="icon" sizes="192x192" href="assets/images/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <title>@Messages("app.title")</title>
+
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+    @*Bootstrap core CSS*@
+    <link rel="stylesheet" media="screen" href="assets/bootstrap-3.3.7/dist/css/bootstrap.min.css">
+
+    @*Material core CSS*@
+    <link rel="stylesheet" media="screen" href="assets/bower_components/material-design-lite/material.css">
+
+    @*Bootstrap fonts CSS*@
+    <link rel="stylesheet" media="screen" href="assets/stylesheets/backend/material/fonts.css">
+    <link rel="stylesheet" media="screen" href="assets/stylesheets/backend/material/icons.css">
+
+    @*Awesome*@
+    <link rel="stylesheet" media="screen" href="assets/bower_components/font-awesome/css/font-awesome.min.css">
+
+    @*Jquery UI*@
+    <link rel="stylesheet" media="screen" href="assets/bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css">
+    <link rel="stylesheet" media="screen" href="assets/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css">
+
+    @*Openlayers*@
+    <link rel="stylesheet" media="screen" href="assets/openlayers3/css/ol.css">
+    <link rel="stylesheet" media="screen" href="assets/stylesheets/ol/style.css">
+
+    @*Custom CSS*@
+    <link rel="stylesheet" media="screen" href="assets/stylesheets/map.css">
+    <link rel="stylesheet" media="screen" href="assets/stylesheets/template-mdl.css">
+    <link rel="stylesheet" media="screen" href="assets/stylesheets/modal.css">
+    <link rel="stylesheet" media="screen" href="assets/stylesheets/popup.css">
+
+    @*Global site tag (gtag.js) - Google Analytics*@
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-172379902-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-172379902-1');
+    </script>
+
+</head>
+
+<body>
+
+@*INICIO - LOADING*@
+<div class="carregador">
+    <img src="assets/images/loading.gif" alt="Loading...">
+</div>
+@*FIM - LOADING*@
+
+@*INICIO do layout MDL*@
+<div class="mdl-layout cib-layout mdl-js-layout mdl-layout--fixed-header">
+
+    @*INICIO - Menu Superior*@
+    <header class="mdl-layout__header mdl-color--deep-cibiogas">
+        <div class="mdl-layout__header-row">
+            <img class="top-menu-imagem-centro esconde-celular" src="assets/images/CIBiogas_logo.png" border="0" alt="cibiogas_logo">
+            <div class="mdl-layout-spacer"></div>
+            <div><p class="titulo"><img class="top-menu-imagem-centro esconde-celular" src="assets/images/biogasmap-logo.png" border="0" alt="cibiogas_logo"></p></div>
+            <div class="mdl-layout-spacer"></div>
+            <nav class="nav navbar-nav pull-right">
+                <a class="btn btn-success btn-lg"
+                   href="https://app.powerbi.com/view?r=eyJrIjoiNjQxYjg4NjgtMTI0NC00NTk2LTk5OTQtMjFkNWMxZjM1ZTk5IiwidCI6ImMzOTg3ZmI3LTQ5ODMtNDA2Ny1iMTQ2LTc3MGU5MWE4NGViNSJ9"
+                   role="button"
+                   onclick="biogasData()"
+                   target="_blank"
+                   type="button"><i class="fa fa-map" aria-hidden="true"></i> Biogasdata</a>
+                <a class="btn btn-primary btn-lg"
+                   role="button"
+                   onclick="abrirModalCadastro()"
+                   type="button"><i class="fa fa-plus" aria-hidden="true"></i> Cadastrar planta</a>
+            </nav>
+        </div>
+    </header>
+    @*FIM - Menu Superior*@
+
+    @*INICIO - Menu gaveta*@
+    <div class="mdl-layout__drawer">
+        <nav class="cib-navigation mdl-navigation mdl-color--white">
+
+            @*INICIO - Download NOTA Tecnica*@
+            <div class="sections-menu">
+                <div class="col-md-12">
+                    <p style="padding: 0px 6px;" class="mdl-card__supporting-text mdl-card__subtitle-text sidebar-section-title"><b><i class="fa fa-cloud-download" aria-hidden="true"></i> NOTA TÉCNICA</b></p>
+                    <p class="mdl-card__supporting-text mdl-card__subtitle-text sidebar-section-title">Panorama do biogás no Brasil em 2019</p>
+                    <a onclick="notaTecnica()" id="btnNotaTecnica" type="button" class="btn btn-success btn-sm" target="_blank" href="https://biblioteca.cibiogas.org/biblioteca/notatecnica/pdf/panorama-do-biogas-no-brasil-em-2019.pdf">
+                        <span class="fa fa-file-pdf-o" aria-hidden="true"></span> Download
+                    </a>
+                </div>
+            </div>
+            @*FIM - Download NOTA Tecnica*@
+
+            <div class="separador"></div>
+
+            @*INICIO - TITULO*@
+            <div class="sections-menu">
+                <h2 class="mdl-card__supporting-text mdl-card__subtitle-text sidebar-title">Filtros</h2>
+            </div>
+            @*FIM - TITULO*@
+
+            @*INICIO - LOCALIZACAO*@
+            <div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-phone">
+                <p class="mdl-card__supporting-text mdl-card__subtitle-text sidebar-section-title">Localização</p>
+                <select id="estados" name="estado-id" class="form-control input-sm">
+                    <option value="0">Selecione o Estado</option>
+                        @for(estado <- estados) {
+                            <option value="@estado.getId">@estado.getSigla - @estado.getNome</option>
+                        }
+                    </select>
+                <div class="separador-invisivel"></div>
+                <select style="cursor: default" disabled id="municipios" name="municipios" class="form-control input-sm">
+                    <option value=0>Selecione o Município</option>
+                </select>
+            </div>
+            @*FIM - LOCALIZACAO*@
+
+            <div class="separador"></div>
+
+            @*INICIO - SECTION PORTE*@
+            <div class="sections-menu">
+                <p class="mdl-card__supporting-text mdl-card__subtitle-text sidebar-section-title">Porte</p>
+                <div class="btn-group-wrap">
+                    <div class="btn-group" data-toggle="buttons">
+                        <input class="text-center input-sm" type="text" id="escala-valores" readonly="readonly">
+                        <div id="escala" class="slider"></div>
+                    </div>
+                </div>
+            </div>
+            @*FIM - SECTION PORTE*@
+
+            <div class="separador"></div>
+
+            @*INICIO - SECTION SITUACAO*@
+            <div class="sections-menu">
+                <p class="mdl-card__supporting-text mdl-card__subtitle-text sidebar-section-title">Situação</p>
+
+                <div id="campoSituacao" class="btn-group-wrap">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label style="width:61px; display:inline-block;" class="btn btn-xs btn-default sidebar-situacao">
+                            <input value="1" id="situacaoOperando" type="checkbox">Operação
+                        </label>
+                        <label style="width:78px; display:inline-block;" class="btn btn-xs btn-default sidebar-situacao">
+                            <input value="2" id="situacaoConstruindo" type="checkbox">Implantação
+                        </label>
+                        <label style="width:75px; display:inline-block;" class="btn btn-xs btn-default sidebar-situacao">
+                            <input value="3" id="situacaoReformando" type="checkbox">Reforma
+                        </label>
+                    </div>
+                </div>
+            </div>
+            @*FIM - SECTION SITUACAO*@
+
+            <div class="separador"></div>
+
+            @*INICIO - ANO*@
+            <div class="sections-menu">
+                <p class="mdl-card__supporting-text mdl-card__subtitle-text sidebar-section-title">Início da operação com uso energético do biogás</p>
+                <div id="campoAnos" class="btn-group-wrap">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label style="width:40px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao">
+                            <input id="ano2003" type="checkbox" value="2003">2003
+                        </label>
+                        <label style="width:41px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao">
+                            <input id="ano2004" type="checkbox" value="2004">2004
+                        </label>
+                        <label style="width:41px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao">
+                            <input id="ano2005" type="checkbox" value="2005">2005
+                        </label>
+                        <label style="width:41px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao">
+                            <input id="ano2006" type="checkbox" value="2006">2006
+                        </label>
+                        <label style="width:41px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao">
+                            <input id="ano2007" type="checkbox" value="2007">2007
+                        </label>
+                    </div>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label style="width:40px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao">
+                            <input id="ano2008" type="checkbox" value="2008">2008
+                        </label>
+                        <label style="width:41px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao">
+                            <input id="ano2009" type="checkbox" value="2009">2009
+                        </label>
+                        <label style="width:41px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao">
+                            <input id="ano2010" type="checkbox" value="2010">2010
+                        </label>
+                        <label style="width:41px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao">
+                            <input id="ano2011" type="checkbox" value="2011">2011
+                        </label>
+                        <label style="width:41px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao">
+                            <input id="ano2012" type="checkbox" value="2012">2012
+                        </label>
+                    </div>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label style="width:40px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao">
+                            <input id="ano2013" type="checkbox" value="2013">2013
+                        </label>
+                        <label style="width:41px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao">
+                            <input id="ano2014" type="checkbox" value="2014">2014
+                        </label>
+                        <label style="width:40px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao">
+                            <input id="ano2015" type="checkbox" value="2015">2015
+                        </label>
+                        <label style="width:41px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao">
+                            <input id="ano2016" type="checkbox" value="2016">2016
+                        </label>
+                        <label style="width:41px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao">
+                            <input id="ano2017" type="checkbox" value="2017">2017
+                        </label>
+                    </div>
+                    <div class="btn-group" data-toggle="buttons">
+
+                        <label style="width:41px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao">
+                            <input id="ano2018" type="checkbox" value="2018">2018
+                        </label>
+                        <label style="width:41px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao">
+                            <input id="ano2019" type="checkbox" value="2019">2019
+                        </label>
+                        <!--  						 <label style="width:41px; display:inline-block;" class="btn btn-xs btn-default sidebar-operacao"> -->
+                        <!-- 						   	<input id="ano2020" type="checkbox" value="2020">2020 -->
+                        <!-- 						 </label> -->
+                    </div>
+                </div>
+            </div>
+            @*FIM - ANO*@
+
+            <div class="separador"></div>
+
+            @*INICIO - SECTION APLICACAO*@
+            <div class="sections-menu">
+
+                <p class="mdl-card__supporting-text mdl-card__subtitle-text sidebar-section-title">Aplicação do biogás produzido na biodigestão</p>
+
+                <div id="campoAplicacao" class="btn-group-wrap">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label style="width:105px; display:inline-block;" class="btn btn-xs btn-default sidebar-aplicacao">
+                            <input value="false" id="aplicacaoTermica" type="checkbox">Térmica
+                        </label>
+                        <label style="width:105px; display:inline-block;" class="btn btn-xs btn-default sidebar-aplicacao">
+                            <input value="false" id="aplicacaoEletrica" type="checkbox">Elétrica
+                        </label>
+                    </div>
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label style="width:105px; display:inline-block;" class="btn btn-xs btn-default sidebar-aplicacao">
+                            <input value="false" id="aplicacaoMecanica" type="checkbox">Mecânica
+                        </label>
+                        <label style="width:105px; display:inline-block;" class="btn btn-xs btn-default sidebar-situacao">
+                            <input value="false" id="aplicacaoBiometano" type="checkbox">GNV/Biometano
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+            @*FIM - SECTION APLICACAO*@
+
+            <div class="separador"></div>
+
+            @*INICIO - CATEGORIA DA UNIDADE*@
+            <div id="campoCategoria" class="sections-menu">
+
+                <p class="mdl-card__supporting-text mdl-card__subtitle-text sidebar-section-title">Fonte de substrato</p>
+
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label style="width:212px;display:inline-block;" class="btn-block btn btn-xs btn-default sidebar-categoria">
+                        <input value="1" id="agropecuaria" type="checkbox">Agropecuária
+                    </label>
+                </div>
+
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label style="width:212px;display:inline-block;" class="btn btn-xs btn-default sidebar-categoria">
+                        <input value="2" id="industria" type="checkbox">Indústria
+                    </label>
+                </div>
+
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label data-toggle="tooltip" title="RSU ou Estação de Tratamento de Esgoto" style="width:212px;display:inline-block;" class="btn btn-xs btn-default sidebar-categoria">
+                        <input value="3" id="esgoto" type="checkbox">RSU ou Estação de Tratamento de...
+                    </label>
+                </div>
+
+            </div>
+            @*FIM - CATEGORIA DA UNIDADE*@
+
+            <div class="separador"></div>
+
+            <div class="mdl-layout-spacer"></div>
+
+            <div class="separador"></div>
+
+            @*INICIO - BOTOES*@
+            <div class="sections-menu">
+                <p class="mdl-card__supporting-text mdl-card__subtitle-text sidebar-section-title"><b><i class="fa fa-cloud-download" aria-hidden="true"></i> Geração de relatório consolidado</b></p>
+                <div class="col-md-12">
+                    <button id="button-clear" class="btn btn-default btn-sm">
+                        <span class="fa fa-eraser" aria-hidden="true"></span> Limpar
+                    </button>
+                    <a id="btnRelatorioModal" type="button" class="btn btn-primary btn-sm" data-toggle="modal" onclick="abrirModal()">
+                        <span class="fa fa-file-text" aria-hidden="true"></span> Relatório
+                    </a>
+                </div>
+            </div>
+            @*FIM - BOTOES*@
+
+            <div class="separador-invisivel"></div>
+        </nav>
+    </div>
+    @*FIM - Menu gaveta*@
+
+    @*INICIO - Conteudo*@
+    <main class="mdl-layout__content mdl-color--grey-100">
+        <section>
+            <div id="mapa">
+                <div id="popup-unidade" class="ol-popup">
+                    <!-- Botao fechar o popup -->
+                    <a id="popup-closer" class="ol-popup-closer"><i class="fa fa-times" aria-hidden="true"></i></a>
+                    <!-- Conteudo do popup -->
+                    <div id="popup-content"></div>
+                </div>
+            </div>
+            <div id="mousePosition"></div>
+            <div id="legenda"></div>
+            <div id="footer"></div>
+        </section>
+    </main>
+    @*FIM - Conteudo*@
+
+    @*INICIO - BARRA LOGO*@
+    <div class="footer-logos esconde-celular">
+        <img class="imagem-footer-branco" src="assets/images/logo-parceiros/logo-branco.png" border="0" alt="cibiogas_logo">
+        <img class="imagem-footer-itaipu" src="assets/images/logo-parceiros/logo-itaipu.png" border="0" alt="itaipu">
+        <img class="imagem-footer-pti" src="assets/images/logo-parceiros/logo-pti.png" border="0" alt="pti">
+        <img class="imagem-footer-abiogas" src="assets/images/logo-parceiros/logo-abiogas2x.webp" border="0" alt="abiogas">
+        <img class="imagem-footer-unido" src="assets/images/logo-parceiros/unido1x.webp" border="0" alt="unido">
+        <img class="imagem-footer-biogas-brasil" src="assets/images/logo-parceiros/logo-biogas-brasil1x.png" border="0" alt="biogas">
+        <img class="imagem-footer-gef" src="assets/images/logo-parceiros/logo-gef1x.png" border="0" alt="gef">
+        <img class="imagem-footer-ministerio" src="assets/images/logo-parceiros/logo_mcti1x.png" border="0" alt="ministerio">
+    </div>
+    @*FIM - BARRA LOGO*@
+
+</div>
+@*FIM do layout MDL*@
+
+@*INICIO - Modal aviso*@
+<!-- Modal -->
+<div class="modal fade" id="modalDeAvisos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="avisos">
+                        <p>Seja bem-vindo ao <strong>Biogasmap</strong>, um mapa interativo de plantas de biogás e biometano do Brasil,
+                            fruto do esforço integrado entre o <strong>CIBIOGAS</strong>, <strong>ABIOGAS</strong>, <strong>UNIDO</strong>, e de vários
+                            fornecedores e produtores da cadeia do biogás.
+                        </p>
+                        <p>
+                            O mapa é gratuito, aberto e colaborativo. Caso você encontre alguma informação incorreta ou ausente,
+                            pedimos que nos informe através do e-mail: <a href="mailto:cadastro.biogas@@cibiogas.org">cadastro.biogas@@cibiogas.org</a>.
+                        </p>
+                        <p>Assim será possível manter os dados sempre atualizados.
+                            As alterações serão avaliadas e adicionadas ao mapa.
+                        </p>
+                        <p><strong>Bom uso</strong>!</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*FIM - Modal aviso@
+
+@*INICIO - Modal Cadastrar planta*@
+<div class="modal fade" id="modalDeCadastro" tabindex="-1" role="dialog" aria-labelledby="cadastrarPlantaLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div id="frameCadastro" class="modal-content">
+            <iframe
+                id="main"
+                width="100%"
+                height="600px"
+                border="0">
+            </iframe>
+        </div>
+    </div>
+</div>
+@*FIM - Modal Cadastrar planta*@
+
+@*INICIO - Modal Relatorio*@
+<div class="modal fade" id="relatorioModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <p class="modal-title text-center" id="modalTitulo"><b>@Messages("app.title") - RELATÓRIO</b></p>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="text-center"><h3><i class="fa fa-industry"></i> <b>Dados do sistema de tratamento de dejetos</b></h3></div>
+                        <div class="col-md-12">
+                            <div class= "linha-modal text-left"><b style="display:inline;">Situação: </b><p class="linha-modal" style="display:inline;" id="situacaoUnidades"></p></div>
+                            <div class= "linha-modal text-left"><b style="display:inline;">Porte: </b><p class="linha-modal" style="display:inline;" id="porteUnidades"></p></div>
+                            <div class= "linha-modal text-left"><b style="display:inline;">Fonte de substratos: </b><p class="linha-modal" style="display:inline;" id="categoriaUnidades"></p></div>
+                            <div class= "linha-modal text-left"><b style="display:inline;">Região: </b><p class="linha-modal" style="display:inline;" id="regiaoUnidades"></p></div>
+                            <div class= "linha-modal text-left"><b style="display:inline;">Estado: </b><p class="linha-modal" style="display:inline;" id="estadoUnidades"></p></div>
+                            <div class= "linha-modal text-left"><b style="display:inline;">Município: </b><p class="linha-modal" style="display:inline;" id="municipioUnidades"></p></div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="text-center"><h3><i class="fa fa-cogs"></i> <b>Detalhamento técnico</b></h3></div>
+                        <div class="col-md-6">
+                            <div class= "linha-modal text-left"><b style="display:inline;">Ano de instalação das plantas: </b><p class="linha-modal" style="display:inline;" id="periodoRelatorio"></p></div>
+                            <div class="linha-modal text-left"><b style="display:inline;">Quantidade de unidades: </b><p class="linha-modal" style="display:inline;" id="quantidadeUnidadeBiodigestores"></p></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="linha-modal text-left"><b style="display:inline;">Produção total de biogás: </b><p class="linha-modal" style="display:inline;" id="producaoTotalBiogasUnidades"></p><p style = "display:inline;"> <small><strong>Nm³/ano</strong></small></p></div>
+                            <div class="linha-modal text-left"><b style="display:inline;">Aplicação do biogás: </b><p class="linha-modal" style="display:inline;" id="aplicacaoUnidades"></p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="pull-left">
+                        <img border="0" alt="logo cib" src="assets/images/CIBiogas_logo.png" class="cib-modal" >
+                    </div>
+                    <div style="padding-top: 11px;">
+                        <div class="btn-group" role="group" aria-label="...">
+                            <button name="csv" data-loading-text="Loading..." id="btnDownloadRelatorioCsv" onclick="downloadRelatorioCsv()" type="button" class="btn btn-default"><span class="fa fa-file-code-o" aria-hidden="true"></span> CSV</button>
+                            <button name="excel" data-loading-text="Loading..." id="btnDownloadRelatorioXls" onclick="downloadRelatorioXls()" type="button" class="btn btn-default"><span class="fa fa-file-excel-o" aria-hidden="true"></span> Excel</button>
+                            <button name="pdf" data-loading-text="Loading..." id="btnDownloadRelatorioPdf" onclick="downloadRelatorioPdf()" type="button" class="btn btn-success"><span class="fa fa-file-pdf-o" aria-hidden="true"></span> Download PDF</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*FIM - Modal Relatorio*@
+
+@*INICIO - Modal Erro*@
+<div class="modal fade" id="relatorioModalErro" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center">@Messages("app.title")</h5>
+            </div>
+            <div class="modal-body">
+                <p class="text-center">Nenhuma unidade foi encontrada com os filtros selecionados.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@*FIM - Modal Erro*@
+
+</body>
+
+<script type="text/javascript">
+
+	window.onload = function() {
+
+	    //animacao carregador de pagina
+        const carregador = document.querySelector(".carregador");
+        carregador.className += " escondido";
+
+		//CSS Cache Buster
+		//Para o arquivo template-MDL
+		let uniqueNumMDL = new Date().getTime();
+		let cssURLTemplateMDL = 'assets/stylesheets/template-mdl.css?ver=' + uniqueNumMDL;
+		let cssElementMDL = document.createElement('link')
+		cssElementMDL.setAttribute('rel','stylesheet')
+		cssElementMDL.setAttribute('type','text/css')
+		cssElementMDL.setAttribute('href', cssURLTemplateMDL);
+		document.getElementsByTagName("head")[0].appendChild(cssElementMDL);
+
+        //CSS Cache Buster
+        //Para o arquivo map.css
+		let uniqueNumMap = new Date().getTime();
+		let cssURLMap = 'assets/stylesheets/map.css?ver=' + uniqueNumMap;
+		let cssElementMap = document.createElement('link')
+		cssElementMap.setAttribute('rel','stylesheet')
+		cssElementMap.setAttribute('type','text/css')
+		cssElementMap.setAttribute('href', cssURLMap);
+		document.getElementsByTagName("head")[0].appendChild(cssElementMap);
+
+		//Abre a gaveta de filtros
+		function openDrawer() {
+			let drawer = document.querySelector('.mdl-layout__drawer');
+			drawer.classList.add("is-visible");
+		}
+
+        //Abre a Legenda
+		function carregarLegenda() {
+			openLegenda();
+		}
+
+		//Abre avisos
+		function abreAvisos() {
+             $("#modalDeAvisos").modal({backdrop: 'static', keyboard: false});
+             //$('#myModal').modal({backdrop: 'static', keyboard: false})
+		}
+
+		//Seta um tempo
+		setTimeout(openDrawer, 500);
+		setTimeout(carregarLegenda, 770);
+		setTimeout(abreAvisos, 780);
+
+	}
+
+    function appendLoading() {
+
+        let img = document.createElement("img");
+        img.src = "assets/images/loading.gif";
+        img.alt = "Loading...";
+
+        let divCarregador = document.createElement("div");
+        divCarregador.setAttribute("id", "carregadorModal");
+        divCarregador.setAttribute("class", "carregador");
+        divCarregador.appendChild(img);
+
+        let divCadastro = document.getElementById('frameCadastro');
+        divCadastro.appendChild(divCarregador);
+
+    }
+
+    //Validador de Modal
+    function abrirModalCadastro() {
+
+	    //Toda vez que o botao for clickado, adicionar o loading.
+        //Isso foi necessario para quando o modal for fechado e aberto novamente
+        appendLoading();
+
+        function carregarframe() {
+
+            setTimeout(removerCarregadorModal, 970);
+
+            let url = "https://docs.google.com/forms/d/e/1FAIpQLScXI9sXKYCBFRz5IJ-2dmxDCx4mDmKKeYcgEH7d73f4_LVE0A/viewform";
+
+            $('#modalDeCadastro').on('shown.bs.modal',function() {
+                $(this).find('iframe').attr('src', url);
+            });
+
+            $("#modalDeCadastro").modal('show');
+        }
+
+        function removerCarregadorModal () {
+            let carregadorModal = document.getElementById("carregadorModal");
+            carregadorModal.remove();
+        }
+
+        carregarframe();
+
+    }
+</script>
+
+@*Jquery*@
+<script src="assets/bower_components/jquery/dist/jquery.min.js" type="text/javascript"></script>
+
+@*Jquery UI*@
+<script src="assets/bower_components/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+
+@*Jquery CSV*@
+<script src="assets/bower_components/jquery-csv/src/jquery.csv.min.js" type="text/javascript"></script>
+
+@*Jquery Toast*@
+<script src="assets/bower_components/jquery-toast-plugin/dist/jquery.toast.min.js" type="text/javascript"></script>
+
+@*Bootstrap*@
+<script src="assets/bootstrap-3.3.7/dist/js/bootstrap.min.js" type="text/javascript"></script>
+
+@*Material Design Lite*@
+<script src="assets/bower_components/material-design-lite/material.min.js" type="text/javascript"></script>
+
+@*DownloadJS*@
+<script src="assets/bower_components/downloadjs/download.min.js" type="text/javascript"></script>
+
+@*PDF*@
+<script src="assets/bower_components/pdfmake/build/pdfmake.min.js" type="text/javascript"></script>
+<script src="assets/bower_components/pdfmake/build/vfs_fonts.js" type="text/javascript"></script>
+
+@*XLSX*@
+<script src="assets/bower_components/js-xlsx/dist/xlsx.full.min.js" type="text/javascript"></script>
+
+@*Filesaver*@
+<script src="assets/bower_components/file-saver/dist/FileSaver.min.js" type="text/javascript"></script>
+
+@*Proj4*@
+<script src="assets/bower_components/proj4/dist/proj4.js" type="text/javascript"></script>
+
+@*Openlayers3*@
+<script src="assets/openlayers3/build/ol.js" type="text/javascript"></script>
+
+@*Momentjs*@
+<script src="assets/bower_components/moment/min/moment.min.js" type="text/javascript"></script>
+
+@*Mapa*@
+<script src="assets/javascripts/mapa/mapa.js" type="text/javascript"></script>
+<script src="assets/javascripts/mapa/popup.js" type="text/javascript"></script>
+<script src="assets/javascripts/mapa/botoes.js" type="text/javascript"></script>
+<script src="assets/javascripts/mapa/servicos.js" type="text/javascript"></script>
+<script src="assets/javascripts/mapa/variaveis.js" type="text/javascript"></script>
+<script src="assets/javascripts/mapa/verificadores.js" type="text/javascript"></script>
+<script src="assets/javascripts/mapa/relatorios.js" type="text/javascript"></script>
+
+@*Controles*@
+<script src="assets/javascripts/mapa/ol/controle/mouseposition.js" type="text/javascript"></script>
+
+@*Ferramenta*@
+<script src="assets/javascripts/mapa/ol/ferramenta/legenda.js" type="text/javascript"></script>
+
+</html>

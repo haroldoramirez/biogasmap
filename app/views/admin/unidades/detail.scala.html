@@ -1,0 +1,248 @@
+@(unidadeForm: play.data.Form[validators.UnidadeFormData], unidade: Unidade)
+
+@usuario() = @{
+    Http.Context.current().args.get("usuario").asInstanceOf[Usuario]
+}
+
+@*Ajudante para o form*@
+@import helper._
+
+@views.html.admin.main(Messages("app.title") + " | Detalhe da Unidade") {
+<div class="col-md-12">
+    <div class="page-header header-biogas">
+        <div class="btn-group btn-breadcrumb pull-right">
+            <a href="@routes.AdminController.painel()" class="btn btn-default"><i class="fa fa-home"></i></a>
+            <a href="@routes.UnidadeController.telaLista()" class="btn btn-default">Unidades</a>
+            <a class="btn btn-static">Detalhe</a>
+        </div>
+        <h1 class="font-style"><i class="fa fa-industry" aria-hidden="true"></i> Detalhe da Unidade</h1>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 col-sm-6 col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Informações
+                    <div class="btn-group pull-right">
+                        <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Opções <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="@routes.UnidadeController.telaLista()">Voltar</a></li>
+                            <li role="separator" class="divider"></li>
+                            @if(unidade.isAprovado) {
+                                <li><a href="@routes.UnidadeController.reprovar(unidade.getId)">Reprovar</a></li>
+                            }
+
+                            @if(unidade.isReprovado || unidade.isAvaliar) {
+                                <li><a href="@routes.UnidadeController.aprovar(unidade.getId)">Aprovar</a></li>
+                            }
+
+                            <li role="separator" class="divider"></li>
+                            <li><a href="@routes.UnidadeController.telaEditar(unidade.getId)">Editar</a></li>
+                            @if(usuario.isAdmin) {
+                                <li role="separator" class="divider"></li>
+                                <li><a data-toggle="modal" href="#modalExcluir">Excluir</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="panel-body">
+
+                    @if(unidadeForm.hasGlobalErrors) {
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <p class="alert alert-danger text-center">@unidadeForm.globalError.message</p>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="table-responsive panel">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td><i class="fa fa-eye" aria-hidden="true"></i> Status</td>
+                                    @if(unidade.isAvaliar) {
+                                        <td class="text-primary">Avaliar <i class="fa fa-gavel" aria-hidden="true"></i></td>
+                                    }
+                                    @if(unidade.isAprovado) {
+                                        <td class="text-success">Aprovado <i class="fa fa-thumbs-o-up" aria-hidden="true"></i></td>
+                                    }
+                                    @if(unidade.isReprovado) {
+                                        <td class="text-danger">Reprovado <i class="fa fa-thumbs-o-down" aria-hidden="true"></i></td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-asterisk" aria-hidden="true"></i> Código único</td>
+                                    <td>@unidade.getCodigo</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-calendar-o" aria-hidden="true"></i> Início da operação com uso energético do biogás</td>
+                                    <td>@unidade.getAnoDeInicioOperacao</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-cogs" aria-hidden="true"></i> Situação</td>
+                                    <td>@unidade.getSituacao.getNome</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-building" aria-hidden="true"></i> Porte</td>
+                                    @if(unidade.getEscala.getIntervalo == 1) {
+                                        <td><span class="label label-success">Pequeno</span></td>
+                                    }
+                                    @if(unidade.getEscala.getIntervalo == 2) {
+                                        <td><span class="label label-warning">Médio</span></td>
+                                    }
+                                    @if(unidade.getEscala.getIntervalo == 3) {
+                                        <td><span class="label label-primary">Grande</span></td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-cubes" aria-hidden="true"></i> Categoria/Substrato</td>
+                                    <td>@unidade.getCategoria.getNome</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-map-marker" aria-hidden="true"></i> Localização</td>
+                                    <td>@unidade.getMunicipio().getNome - @unidade.getMunicipio().getEstado().getSigla</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-location-arrow" aria-hidden="true"></i> Coordenadas - Latitude e Longitude</td>
+                                    <td>@unidade.getLatitude | @unidade.getLongitude</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-sm-6 col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Informações técnicas
+                    <div class="btn-group pull-right">
+                        <a data-toggle="modal" href="#modalInfo" class="btn btn-default btn-xs pull-right" type="button"><span class="fa fa-info-circle"></span></a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive panel">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td><i class="fa fa-crop" aria-hidden="true"></i> Valor estimado</td>
+                                    @if(unidade.getValorEstimado) {
+                                        <td><strong>Sim</strong></td>
+                                    } else {
+                                        <td><strong>Não</strong></td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-fire" aria-hidden="true"></i> Produção diária de biogás</td>
+                                    <td data-toggle="tooltip" data-placement="right" title="Valor exato: @unidade.getProducaoBiogasDia">@String.format("%.0f", unidade.getProducaoBiogasDia) <small>Nm³/dia</small></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-fire" aria-hidden="true"></i> Produção anual de biogás</td>
+                                    <td data-toggle="tooltip" data-placement="right" title="Valor exato: @unidade.getProducaoBiogasAno">@String.format("%.0f", unidade.getProducaoBiogasAno) <small>Nm³/ano</small></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-leaf" aria-hidden="true"></i> Produção diária de substrato</td>
+                                    <td data-toggle="tooltip" data-placement="right" title="Valor exato: @unidade.getProducaoSubstratoDia">@String.format("%.0f", unidade.getProducaoSubstratoDia) <small>Nm³/dia</small></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-leaf" aria-hidden="true"></i> Produção anual de substrato</td>
+                                    <td data-toggle="tooltip" data-placement="right" title="Valor exato: @unidade.getProducaoSubstratoAno">@String.format("%.0f", unidade.getProducaoSubstratoAno) <small>Nm³/ano</small></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-bolt" aria-hidden="true"></i> Aplicação do biogás em Energia Térmica</td>
+                                    @if(unidade.getBiogasParaEnergiaTermica) {
+                                        <td class="text-success"><i class="fa fa-check" aria-hidden="true"></i></td>
+                                    } else {
+                                        <td class="text-danger"><i class="fa fa-times" aria-hidden="true"></i></td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-bolt" aria-hidden="true"></i> Aplicação do biogás em Energia Elétrica</td>
+                                    @if(unidade.getBiogasParaEnergiaEletrica) {
+                                        <td class="text-success"><i class="fa fa-check" aria-hidden="true"></i></td>
+                                    } else {
+                                        <td class="text-danger"><i class="fa fa-times" aria-hidden="true"></i></td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-bolt" aria-hidden="true"></i> Aplicação do biogás em Energia Mecânica</td>
+                                    @if(unidade.getBiogasParaEnergiaMecanica) {
+                                        <td class="text-success"><i class="fa fa-check" aria-hidden="true"></i></td>
+                                    } else {
+                                        <td class="text-danger"><i class="fa fa-times" aria-hidden="true"></i></td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-bolt" aria-hidden="true"></i> Aplicação do biogás em GNR/Biometano</td>
+                                    @if(unidade.getBiogasParaBiometano) {
+                                        <td class="text-success"><i class="fa fa-check" aria-hidden="true"></i></td>
+                                    } else {
+                                        <td class="text-danger"><i class="fa fa-times" aria-hidden="true"></i></td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-floppy-o" aria-hidden="true"></i> Data de cadastro</td>
+                                    <td>
+                                        @unidade.getDataCadastro.getTime.format("dd MMMM yyyy - HH:mm:ss")
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-refresh" aria-hidden="true"></i> Data de alteração</td>
+                                    <td>
+                                        @unidade.getDataAlteracao.getTime.format("dd MMMM yyyy - HH:mm:ss")
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+<div id="modalInfo" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="modalInfo">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@Messages("app.title")</h4>
+            </div>
+            <div class="modal-body">
+                <p><strong>O que é um substrato?</strong></p>
+                <p>Para cultivarmos plantas em casa é preciso reproduzir de maneira mais fiel possível as condições que a planta encontra na natureza. Na terra,
+                    ao natural, são encontradas inúmeras substâncias em decomposição, cheias de matéria orgânica.
+                    O substrato nada mais é do que a reprodução dessa terra natural.</p>
+                <h4>Unidade de medida: </h4>
+                <p>Nm³ - Normal Metro Cúbico</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div id="modalExcluir" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="modalExcluir">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@Messages("app.title")</h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-center">Deseja remover a unidade com código único <b>"@unidade.getCodigo"</b>?</p>
+            </div>
+            <div class="modal-footer">
+                @form(routes.UnidadeController.remover(unidade.getId)) {
+                    <input id="btnRemover" type="submit" value="Remover" class="btn btn-danger">
+                }
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>

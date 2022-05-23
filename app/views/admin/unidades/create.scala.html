@@ -1,0 +1,251 @@
+@import java.util
+@(unidadeForm: play.data.Form[validators.UnidadeFormData],
+        categorias: util.Map[String,Boolean],
+        situacoes: util.Map[String,Boolean],
+        estados : util.Map[String,Boolean])
+
+@import helper._
+@import templates.bootstrap.unidade._
+
+@views.html.admin.main(Messages("app.title") + " | Cadastro de Unidades") {
+<div class="col-md-12">
+    <div class="page-header header-biogas">
+        <div class="btn-group btn-breadcrumb pull-right">
+            <a href="@routes.AdminController.painel()" class="btn btn-default"><i class="fa fa-home"></i></a>
+            <a href="@routes.UnidadeController.telaLista()" class="btn btn-default">Unidades</a>
+            <a class="btn btn-static">Cadastrar</a>
+        </div>
+        <h1 class="font-style"><i class="fa fa-industry" aria-hidden="true"></i> Cadastrar Unidade</h1>
+    </div>
+</div>
+<!--Tela de Cadastro-->
+<div class="container">
+    @form(routes.UnidadeController.inserir(), 'id -> "unidadeForm", 'autocomplete -> "off") {
+
+    <!-- Row start -->
+    <div class="row">
+        <div class="col-md-8 col-sm-6 col-xs-8">
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    <i class="icon-calendar"></i>
+                    <h3 class="panel-title">Informações</h3>
+                </div>
+
+                <div class="panel-body">
+
+                    @if(unidadeForm.hasGlobalErrors) {
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <p class="alert alert-danger text-center">@unidadeForm.globalError.message</p>
+                            </div>
+                        </div>
+                    }
+                    <div class="col-md-6">
+                        @*codigo*@
+                        @numero(unidadeForm("codigo"),
+                        label = "Código:",
+                        placeholder = "1234",
+                        tamanho = "12")
+
+                        @*categorias*@
+                        @selecao(unidadeForm("categoria"),
+                        label = "Categoria:",
+                        optionMap = categorias,
+                        isMultiple = false,
+                        tamanho = "12")
+
+                        @*situacoes*@
+                        @selecao(unidadeForm("situacao"),
+                        label = "Situação:",
+                        optionMap = situacoes,
+                        isMultiple = false,
+                        tamanho = "12")
+
+                        @*ano*@
+                        @ano(unidadeForm("anoDeInicioOperacao"),
+                        label = "Início da operação com uso energético do biogás:",
+                        placeholder = "2016",
+                        tamanho = "12")
+                    </div>
+                    <div class="col-md-6">
+                        @*Substrato*@
+                        @numero(unidadeForm("producaoSubstratoAno"),
+                        label = "Produção anual de substrato:",
+                        placeholder = "valor em (Nm³/ano)",
+                        tamanho = "12")
+
+                        @*Substrato*@
+                        @numero(unidadeForm("producaoSubstratoDia"),
+                        label = "Produção diária de substrato:",
+                        placeholder = "valor em (Nm³/dia)",
+                        tamanho = "12")
+
+                        @*Biogas*@
+                        @numero(unidadeForm("producaoBiogasAno"),
+                        label = "Produção anual de biogás:",
+                        placeholder = "valor em (Nm³/ano)",
+                        tamanho = "12")
+
+                        @*Biogas*@
+                        @numero(unidadeForm("producaoBiogasDia"),
+                        label = "Produção diária de biogás:",
+                        placeholder = "valor em (Nm³/dia)",
+                        tamanho = "12")
+
+                        @*Valor estimado*@
+                        @caixaSelecao(unidadeForm("valorEstimado"),
+                        nome = "Produção é estimado?",
+                        tamanho = "12")
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    <i class="icon-calendar"></i>
+                    <h3 class="panel-title">Coordenadas</h3>
+                </div>
+
+                <div class="panel-body">
+                    <div class="col-md-6">
+                        @*latitude*@
+                        @coodenadas(unidadeForm("latitude"),
+                        label = "Latitude:",
+                        placeholder = "-27.043845",
+                        tamanho = "12")
+                    </div>
+                    <div class="col-md-6">
+                        @*longitude*@
+                        @coodenadas(unidadeForm("longitude"),
+                        label = "Longitude:",
+                        placeholder = "-51.093502",
+                        tamanho = "12")
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    <i class="icon-calendar"></i>
+                    <h3 class="panel-title">Aplicação do biogás produzido na biodigestão</h3>
+                </div>
+
+                <div class="panel-body">
+                    <div class="row">
+                        <label class="col-md-8"> Energia Térmica </label>
+                        <label class="radio-inline"><input name="biogasParaEnergiaTermica" type="radio" value="true">Sim</label>
+                        <label class="radio-inline"><input name="biogasParaEnergiaTermica" type="radio" value="false" checked="">Não</label>
+                    </div>
+
+                    <div class="row">
+                        <label class="col-md-8"> Energia Elétrica </label>
+                        <label class="radio-inline"><input name="biogasParaEnergiaEletrica" type="radio" value="true">Sim</label>
+                        <label class="radio-inline"><input name="biogasParaEnergiaEletrica" type="radio" value="false" checked="">Não</label>
+                    </div>
+
+                    <div class="row">
+                        <label class="col-md-8"> Energia Mecânica </label>
+                        <label class="radio-inline"><input name="biogasParaEnergiaMecanica" type="radio" value="true">Sim</label>
+                        <label class="radio-inline"><input name="biogasParaEnergiaMecanica" type="radio" value="false" checked="">Não</label>
+                    </div>
+
+                    <div class="row">
+                        <label class="col-md-8">GNR/Biometano</label>
+                        <label class="radio-inline"><input name="biogasParaBiometano" type="radio" value="true">Sim</label>
+                        <label class="radio-inline"><input name="biogasParaBiometano" type="radio" value="false" checked="">Não</label>
+                    </div>
+                </div>
+            </div>
+            <div class="panel @if(unidadeForm.hasGlobalErrors) {panel-danger} else {panel-default}">
+                <div class="panel-heading clearfix">
+                    <i class="icon-calendar"></i>
+                    <h3 class="panel-title">Localização</h3>
+                </div>
+
+                <div class="panel-body">
+                    @*estados*@
+                    @selecaoEstado(unidadeForm("estado"),
+                        label = "Estado:",
+                        optionMap = estados,
+                        isMultiple = false,
+                        tamanho = "12")
+                    <br>
+                    <div class="col-md-12">
+                        <label class="control-label" for="municipio">Município:</label>
+                        <select disabled id="municipio" name="municipio" class="form-control">
+                            <option value="0">-- Selecione --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Row end -->
+
+    <hr >
+    @*botoes*@
+    <div class="row">
+        <div class="form-group">
+            <div class="col-md-12">
+                <button data-loading-text="Loading..." id="btnSalvar" type="submit" class="btn btn-success pull-right" autocomplete="off">Salvar</button>
+                <a class="btn btn-default" type="button" href="@routes.UnidadeController.telaLista()">Cancelar</a>
+            </div>
+        </div>
+    </div>
+    }
+</div>
+
+}
+
+<script type="text/javascript">
+
+    window.onload = function() {
+        const form = document.getElementById("unidadeForm");
+        form.elements[0].focus();
+
+        $('#btnSalvar').on('click', function () {
+            const $btn = $(this).button('loading');
+        });
+
+        $('#anoDeInicioOperacao').datetimepicker({
+            format: 'YYYY',
+            date: new Date()
+        });
+
+        $("#estado").change(function() {
+
+         	let estadoNome =  $("#estado option:selected").val();
+            let optionMunicipios = "";
+
+            $("#municipio").html("");
+
+            if (estadoNome.length !== 0) {
+
+                $.getJSON("/municipios/"+estadoNome, function(data) {
+
+                    $("#municipio").attr("disabled", false);
+
+                    $.each( data, function( key, val ) {
+
+                        optionMunicipios += '<option id="municipio-' + val.id + '" value= "' + val.id + '">' + val.nome + '</option> \n';
+
+                    });
+
+                    $("#municipio").append(optionMunicipios);
+                });
+            } else {
+
+                optionMunicipios += '<option value="0">-- Selecione --</option> \n';
+
+                $("#municipio").attr("disabled", true);
+
+                $("#municipio").append(optionMunicipios);
+
+            }
+
+      	});
+
+    };
+
+</script>

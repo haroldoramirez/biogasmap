@@ -1,0 +1,708 @@
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ /***** Style utilizado nas telas do frontend *****/
+
+html, body {
+  font-family: 'Roboto', 'Helvetica', 'sans-serif';
+}
+
+.titulo {
+    font-weight: 600;
+    margin: 8px 0px;
+    padding: 4px 15px;
+    font-size: 35px;
+    color: #757575;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+abbr[title] {
+    border:none;
+    text-decoration: none;
+}
+
+.spinner-loading-cib {
+    color: #689f38
+}
+
+.no-padding {
+    padding: 0;
+}
+
+a {
+    color: #3f51b5;
+    text-decoration: none;
+    transition: all .2s;
+    cursor: pointer;
+}
+
+p {
+    font-size: 14px;
+    letter-spacing: 0;
+    margin: 0px 0 0px;
+}
+
+img.card-image {
+    width: 100%;
+    height: auto;
+}
+
+img.card-image-top-menu {
+	height: 94px;
+}
+
+img.card-image-top-menu-ministerio {
+	height: 70px;
+}
+
+img.card-image-top-menu-abc {
+	height: 64px;
+}
+
+img.imagem-footer-logos {
+	width: 100%;
+	max-width : 200px;
+	height: 16vw;
+	max-height: 80px;
+	object-fit: cover;
+}
+
+img.imagem-footer-itaipu {
+    width: 100%;
+    max-width: 72px;
+    height: 16vw;
+    max-height: 54px;
+    object-fit: cover;
+    margin-right: 9px;
+    margin-left: 9px;
+}
+
+img.imagem-footer-pti {
+    width: 100%;
+    max-width: 91px;
+    height: 16vw;
+    max-height: 41px;
+    object-fit: cover;
+    margin-right: 9px;
+    margin-left: 9px;
+}
+
+img.imagem-footer-abiogas {
+    width: 100%;
+    max-width: 120px;
+    height: 20vw;
+    max-height: 42px;
+    object-fit: cover;
+    margin-right: 9px;
+    margin-left: 9px;
+}
+
+img.imagem-footer-unido {
+    width: 100%;
+    max-width: 224px;
+    height: 20vw;
+    max-height: 40px;
+    object-fit: cover;
+    margin-right: 9px;
+    margin-left: 9px;
+}
+
+img.imagem-footer-ministerio {
+	width: 100%;
+    max-width: 245px;
+    height: 20vw;
+    max-height: 62px;
+    position: relative;
+    object-fit: cover;
+    margin-right: 9px;
+    margin-left: 5px;
+}
+
+img.imagem-footer-biogas-brasil {
+    width: 100%;
+	max-width : 110px;
+    margin-right: 9px;
+    margin-left: 9px;
+}
+
+img.imagem-footer-gef {
+    width: 100%;
+    max-width: 50px;
+    margin-right: 1px;
+    margin-left: 2px;
+}
+
+img.imagem-footer-branco {
+	width: 100%;
+	max-width : 125px;
+	height: 20vw;
+	max-height: 55px;
+	position: relative;
+	object-fit: cover;
+    margin-right: 9px;
+    margin-left: 9px;
+}
+
+.top-menu-imagem-centro {
+	height: 32px;
+}
+
+.footer-logos {
+	display: flex;
+	flex-direction: center;
+	justify-content: center;
+	align-items: center;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+#loading-bar .bar {
+    background: #d56515;
+}
+
+#loading-bar .peg {
+    box-shadow: 0 0 20px #000000, 0 0 10px #000000;
+}
+
+#loading-bar-spinner .spinner-icon {
+    border-top-color:  #2c3e50;
+    border-left-color: #2c3e50;
+}
+
+/* iOS Safari specific workaround */
+.cib-drawer .mdl-menu__container {
+  z-index: -1;
+}
+.cib-drawer .cib-navigation {
+  z-index: -2;
+}
+/* END iOS Safari specific workaround */
+.cib-drawer .mdl-menu .mdl-menu__item {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+/*Modificado o height, propriedade do header do menu esquerdo*/
+.cib-drawer-header {
+    box-sizing: border-box;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-justify-content: flex-end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    padding: 10px;
+    text-align: center;
+    background-color: white;
+}
+
+.cib-navigation {
+    -webkit-flex-grow: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+}
+
+/* cor da fonte do menu esquerdo e cor de fundo do menu esquerdo distancia de todos os links do menu*/
+.cib-layout .cib-navigation .mdl-navigation__link {
+    display: -webkit-flex !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.56);
+    font-weight: 500;
+    font-size: 13px;
+    padding: 8px 28px;
+    line-height: 20px;
+}
+
+/*Muda as cores dos seletores do menu esquerdo*/
+.cib-layout .cib-navigation .mdl-navigation__link:hover {
+    background-color: #E0E0E0;
+    color: #000000;
+    -webkit-transition: background 0.2s, color 0.2s;
+    -moz-transition: background 0.2s, color 0.2s;
+    transition: background 0.2s, color 0.2s;
+}
+
+/* tamanho dos ícones do menu esquerdo e distância*/
+.cib-navigation .mdl-navigation__link .material-icons {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.active {
+   background-color: #EEEEEE;
+}
+
+.active-bandeira {
+    background-color: #86B914;
+}
+
+.cib-content {
+  max-width: 1080px;
+}
+
+.subtitulo {
+    background-color: #546e7a;
+    color: #fff;
+}
+
+.subtitulo .conteudo-pagina {
+    padding-top: 24px;
+    padding-bottom: 24px;
+    margin-bottom: 0;
+}
+
+/* cor da fonte do menu esquerdo e cor de fundo do menu esquerdo distancia de todos os links do menu*/
+.cib-layout .top-navigation .mdl-navigation__link {
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+/*Muda as cores dos seletores do menu superior*/
+.cib-layout .top-navigation .mdl-navigation__link:hover {
+    background-color: #a0ce4e;
+    -webkit-transition: background 0.2s, color 0.2s;
+    -moz-transition: background 0.2s, color 0.2s;
+    transition: background 0.2s, color 0.2s;
+}
+
+.activetop {
+    background-color: #a0ce4e;
+    color: #fff;
+}
+
+.separadortop {
+    margin-right: 4px;
+}
+
+.site-logo {
+    display: block;
+    margin: 0 auto;
+}
+
+.site-a {
+    color : rgba(0,0,0,.54);
+    text-decoration:none;
+    font-weight: bold;
+}
+
+.site-a-foto {
+    text-decoration:none;
+    color: #dcdcdc;
+}
+
+.separador {
+    height: 1px;
+    background-color: #dcdcdc;
+    margin: 3px 0;
+    margin-top: 8px;
+}
+
+.separador-invisivel {
+    height: 1px;
+    background-color: #ffffff;
+    margin: 4px 0;
+    margin-top: 6px;
+}
+
+.separador-publicacoes {
+    height: 1px;
+    background-color: #dcdcdc;
+    margin: 6px 0;
+}
+
+.mdl-color--deep-cibiogas {
+/*    background-color: rgb(104,159,56) !important;*/
+ 	background-color: rgb(255,255,255) !important;
+/* 	background-color:rgb(92,184,92); */
+}
+
+/* muda a cor do botão do menu esquerdo quando ele esta minimizado */
+.cib-layout .mdl-layout__header .mdl-layout__drawer-button {
+   /* color: rgb(255, 255, 255);*/
+  /*color: rgb(104,159,56);*/
+  color: #757575;
+}
+
+.mdl-color--deep-orange-cibiogas-text {
+    color: rgb(104,159,56) !important;
+}
+
+.termo-max-width {
+    max-width: 1100px;
+    margin: auto;
+}
+
+.termo-ribbon {
+    width: 100%;
+    height: 3vh;
+    -webkit-flex-shrink: 0;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+}
+
+.termo-main {
+    margin-top: -35vh;
+    -webkit-flex-shrink: 0;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+}
+
+.termo-header .mdl-layout__header-row {
+    padding-left: 40px;
+}
+
+.termo-container {
+    max-width: 1600px;
+    width: calc(100% - 16px);
+    margin: 0 auto;
+}
+
+.termo-content {
+    border-radius: 2px;
+    padding: 80px 56px;
+    margin-bottom: 80px;
+    text-align: justify;
+}
+
+.termo-layout.is-small-screen .termo-content {
+    padding: 40px 28px;
+}
+
+.termo-content h3 {
+    margin-top: 48px;
+}
+
+.termo-footer {
+    padding-left: 40px;
+}
+
+.termo-footer .mdl-mini-footer--link-list a {
+    font-size: 13px;
+}
+
+.cib-filtros {
+    width: 100%;
+}
+
+.cib-filtros-input {
+    font-size: 21px;
+}
+
+.cib-filtros-label {
+    font-size: 21px;
+    top: 27px;
+}
+
+.cib-titulo {
+    font-size: 16px;
+}
+
+.mdl-textfield__label:after {
+    background-color: rgb(104,159,56) !important;
+}
+
+.cib-footer.mdl-mini-footer,.cib-footer.mdl-mini-footer ul {
+    -webkit-justify-content:center;
+    -ms-flex-pack:center;
+    justify-content:center;
+}
+
+.cib-footer.mdl-mini-footer ul {
+    padding:0;
+    display:-webkit-flex;
+    display:-ms-flexbox;
+    display:flex;
+    -webkit-flex-direction:row;
+    -ms-flex-direction:row;
+    flex-direction:row;
+    -webkit-align-items:center;
+    -ms-flex-align:center;
+    align-items:center;
+}
+
+.p-40{padding:40px}
+
+.p-r-20{padding-right:20px}
+
+.p-20--small{padding:20px}
+
+.f-left{float:left}
+
+.m-r-5{margin-right:5px}
+
+.m-t-30{margin-top:30px}
+
+.list-bordered{list-style:none;margin:0;padding:0}
+
+.list-bordered li{border-bottom:1px rgba(0,0,0,.1) solid;transition:all .1s}.list-bordered li a{display:block;padding:5px}.list-bordered li a:hover{padding-left:10px}
+
+.m-r-5{margin-right:5px}
+
+.f11{font-size:11px}
+
+.sidebar-title {
+	width: 100%;
+    text-align: center;
+    padding: 4px 4px;
+    font-size: 15px;
+    color: rgba(0,0,0,.54);
+    font-weight: 500;
+}
+
+.sidebar-section-title {
+	width: 100%;
+    text-align: center;
+    font-size: 12px;
+    padding: 6px 6px;
+}
+
+.abbr-sidebar {
+	border:none;
+    text-decoration: none;
+}
+
+.btn-group-wrap {
+    text-align: center;
+}
+
+.sidebar-buttom {
+	padding: 0px 3px;
+}
+
+.sidebar-situacao {
+  	margin: 2px;
+}
+
+.sidebar-setor {
+  	margin: 2px;
+}
+
+.sidebar-aplicacao {
+  	margin: 2px;
+}
+
+.sidebar-setor {
+  	margin: 2px;
+}
+
+.sidebar-tecnologia {
+  	margin: 2px;
+}
+
+.sidebar-operacao {
+  	margin: 2px;
+}
+
+.sidebar-substrato {
+  	margin: 2px;
+}
+
+.sidebar-categoria {
+  	margin: 2px;
+}
+
+.slider-box {
+	width: 90%;
+	margin: 25px auto
+}
+
+label, input {
+	border: none;
+}
+
+.slider {
+    margin: 2px 0;
+}
+
+.btn-space-sidebar {
+    margin-right: 15px;
+}
+
+.btn:focus {
+  outline: none;
+}
+
+/* SUBSTRATO */
+.sections-menu {
+	text-align: center;
+}
+
+.mdl-layout--fixed-header>.mdl-layout__header {
+    z-index: 6;
+}
+
+.has-drawer  .mdl-layout__drawer {
+      padding-top: 64px;
+}
+
+.mdl-layout--fixed-drawer:not(.is-small-screen)>.mdl-layout__header {
+    padding-left: 240px;
+    margin-left: 0;
+    width: 100%;
+}
+
+
+ @media screen and (max-width: 1350px) {
+    .esconde-celular-titulo {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .esconde-celular {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 601px) {
+    .mostra-celular {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .esconde-celular-home {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    .esconde-celular-botao-vertical {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 601px) {
+    .mostra-celular-botao-vertical {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 1366px) {
+    .margem-desktop {
+        padding-left: 10%;
+        padding-right: 10%;
+    }
+}
+
+.mdl-layout__obfuscator {
+  background-color: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 4;
+  visibility: hidden;
+  transition-property: background-color;
+  transition-duration: 0.2s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+  .mdl-layout__obfuscator.is-visible {
+    background-color: rgba(0, 0, 0, 0.5);
+    visibility: hidden; }
+  @supports (pointer-events: auto) {
+    .mdl-layout__obfuscator {
+      background-color: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transition-property: opacity;
+      visibility: hidden;
+      pointer-events: none; }
+      .mdl-layout__obfuscator.is-visible {
+        pointer-events: auto;
+        opacity: 1; } }
+
+  .mdl-layout__header .mdl-navigation__link {
+    color: #757575;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    margin-bottom: 4px;
+  }
+
+      .android-navigation-container {
+        /* Simple hack to make the overflow happen to the left instead... */
+        direction: rtl;
+        -webkit-order: 1;
+            -ms-flex-order: 1;
+                order: 1;
+        width: 500px;
+        transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+            width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .android-navigation {
+        /* ... and now make sure the content is actually LTR */
+        direction: ltr;
+        -webkit-justify-content: flex-end;
+        -ms-flex-pack: end;
+        justify-content: flex-end;
+        width: 800px;
+      }
+
+    .android-navigation .mdl-navigation__link {
+      display: inline-block;
+      height: 60px;
+      line-height: 68px;
+      background-color: transparent !important;
+      border-bottom: 4px solid transparent;
+    }
+
+    .android-navigation .mdl-navigation__link:hover {
+        color: #424242;
+    }
+
+    .button span:after {
+      content: '\00bb';
+      position: absolute;
+      opacity: 0;
+      top: 0;
+      right: -20px;
+      transition: 0.5s;
+    }
+
+    .button:hover span {
+      padding-right: 25px;
+    }
+
+    .button:hover span:after {
+      opacity: 1;
+      right: 0;
+    }
+

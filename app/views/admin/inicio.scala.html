@@ -1,0 +1,196 @@
+@(usuarioPage: com.avaje.ebean.PagedList[Usuario],
+usuariosLast: List[Usuario],
+logsLast: List[Log],
+contador: Contador,
+unidadesLast: List[Unidade],
+quantidade: Integer)
+
+@usuario() = @{
+    Http.Context.current().args.get("usuario").asInstanceOf[Usuario]
+}
+
+@views.html.admin.main(Messages("app.title")) {
+
+<div class="col-md-12">
+    <div class="page-header header-biogas">
+        <div class="btn-group btn-breadcrumb pull-right">
+            <a href="@routes.AdminController.painel()" class="btn btn-default"><i class="fa fa-home"></i></a>
+            <a class="btn btn-static">Início</a>
+        </div>
+        <h1 class="font-style"><i class="fa fa-home" aria-hidden="true"></i> Dashboard</h1>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <section class="jumbotron">
+        <h1><img src="@routes.Assets.versioned("images/biogasmap-logo.png")"></h1>
+        <p>Bem vindo, <strong>@usuario.getNome()</strong>! este é seu painel. Temos um total de <strong>@quantidade</strong> unidades cadastradas de várias regiões do Brasil.</p>
+    </section>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <div class="col-md-6 col-md-6">
+                <div class="panel panel panel-green">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-file-pdf-o fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">@contador.getPdf</div>
+                                <div>Downloads em PDF</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-md-6">
+                <div class="panel panel panel-green">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-file-code-o fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">@contador.getCsv</div>
+                                <div>Downloads em CSV</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-md-6">
+                <div class="panel panel panel-primary">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-file-excel-o fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">@contador.getExcel</div>
+                                <div>Downloads em Excel</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-md-6">
+                <div class="panel panel panel-yellow">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-map-o fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">@contador.getBiogasdata</div>
+                                <div>Acessos ao Biogasdata</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-md-6">
+                <div class="panel panel panel-yellow">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-file-text-o fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">@contador.getNotatecnica</div>
+                                <div>Acessos a Nota técnica</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-industry"></i> Últimas unidades cadastradas</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="list-group">
+                        @for(unidade <- unidadesLast) {
+                            <li class="list-group-item">
+                                <span class="pull-right text-muted small">
+                                    <em> @unidade.getDataCadastro.getTime.format("dd MMMM yyyy - HH:mm:ss")</em>
+                                </span>
+                                <a href="@routes.UnidadeController.telaDetalhe(unidade.getId)">
+                                    <span>@unidade.getCodigo</span>
+                                </a>
+                                 - Município de @unidade.getMunicipio.getNome - @unidade.getMunicipio.getEstado.getSigla e porte
+                                @if(unidade.getEscala.getIntervalo == 1) { <span class="label label-success"> Pequeno</span> }
+                                @if(unidade.getEscala.getIntervalo == 2) { <span class="label label-warning"> Médio</span> }
+                                @if(unidade.getEscala.getIntervalo == 3) { <span class="label label-primary"> Grande</span> }
+                            </li>
+                        }
+                    </ul>
+                    <div class="text-right">
+                        <a href="@routes.UnidadeController.telaLista()">
+                            Visualizar todas a Unidades <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if(usuario.isAdmin) {
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-9">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-file"></i> Logs Registrados</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="list-group">
+                        @for(log <- logsLast) {
+                        <li class="list-group-item">
+                            <span class="pull-right text-muted small"><em> @log.getDataCadastro.getTime.format("dd MMMM yyyy - HH:mm:ss")</em></span>
+                            <span>@log.getMensagem</span>
+                        </li>
+                        }
+                    </ul>
+                    <div class="text-right">
+                        <a href="@routes.LogController.telaLista()">Visualizar todos os Logs <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-users"></i> Últimos Usuários Cadastrados</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="list-group">
+                        @for(usuario <- usuariosLast) {
+                        <li class="list-group-item">
+                            <span class="pull-right text-muted small"><em> @usuario.getDataCadastro.format("dd MMMM yyyy")</em></span>
+                            <a href="@routes.UsuarioController.telaDetalhe(usuario.getId)"><span>@usuario.getNome</span></a>
+                        </li>
+                        }
+                    </ul>
+                    <div class="text-right">
+                        <a href="@routes.UsuarioController.telaLista()">
+                            Visualizar todos os Usuários <i class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+}
+
+}

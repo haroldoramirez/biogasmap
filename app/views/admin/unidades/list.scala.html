@@ -1,0 +1,261 @@
+@****************************************
+* lista de Unidades    *
+****************************************@
+
+@import views.html.helper.form
+@import templates.bootstrap._
+@(currentPage: com.avaje.ebean.PagedList[Unidade],
+currentSortBy: String,
+currentOrder: String,
+currentFilter: String,
+listForm:DynamicForm)
+
+@****************************************
+* Helper generating navigation links    *
+****************************************@
+@link(newPage:Int, newSortBy:String) = @{
+
+    var sortBy = currentSortBy
+    var order = currentOrder
+
+if(newSortBy != null) {
+    sortBy = newSortBy
+if(currentSortBy == newSortBy) {
+    if(currentOrder == "asc") {
+        order = "desc"
+    } else {
+        order = "asc"
+    }
+    } else {
+        order = "asc"
+    }
+}
+// Generate the link
+routes.UnidadeController.telaLista(newPage, sortBy, order, currentFilter)
+
+}
+
+@import helper._
+@import templates.bootstrap._
+
+@**********************************
+* Helper generating table headers *
+***********************************@
+@header(key:String, title:String, largura: String) = {
+<th style="@largura" rowspan="1" colspan="1" tabindex="0" class="@key.replace(".","_") sorting @if(currentSortBy == key) @{if(currentOrder == "asc") "sorting_asc headercor" else "sorting_desc headercor"}">
+<a href="@link(0, key)">@title</a>
+</th>
+}
+
+@views.html.admin.main(Messages("app.title")) {
+@views.html.admin.header("Unidades", "fa fa-industry")
+<div class="col-sm-12">
+    @views.html.admin.notificacoes()
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pull-right btn-group">
+                        <a href="@routes.UnidadeController.telaNovo()" type="button" class="btn btn-success"><span class="fa fa-plus"></span> Cadastrar</a>
+                        <a data-toggle="modal" href="#modalCSV" type="button" class="btn btn-warning"><span class="fa fa-file-code-o"></span> Cadastrar por CSV</a>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Exportar
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-header">Formato</li>
+                                <li><a data-toggle="modal" href="#modalExportarCSV"><i class="fa fa-file-code-o" aria-hidden="true"></i> CSV</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a data-toggle="modal" href="#modalExportarExcel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Excel</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="well well-sm">
+                        @form(link(0, "codigo"), 'id -> "filtroForm") {
+                            <!-- INICIO - input-group -->
+                            <div class="input-group col-md-4">
+                                <input class="form-control" type="search" id="searchBox" name="f" value="@currentFilter" placeholder="Filtrar por código..." maxlength="70">
+                                <span class="input-group-btn">
+                                    <button type="submit" id="searchSubmit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+                                    <a type="button" href="@routes.UnidadeController.telaLista()" class="btn btn-default"><span class="fa fa-refresh"></span> Limpar</a>
+                                </span>
+                            </div>
+                            <!-- FIM - input-group -->
+                        }
+                    </div>
+                </div>
+            </div>
+            @if(currentPage.getTotalRowCount == 0) {
+                <div class="well well-sm">
+                    <em>Nenhuma informação encontrada com o codigo <strong>"@currentFilter"</strong>.</em>
+                </div>
+            } else {
+                <div class="table-responsive">
+                    <table border="1" class="table table-bordered table-hover dataTable">
+                        <thead>
+                            <tr role="row">
+                                @header("codigo", "Código", "max-width: 150px")
+                                @header("municipio", "Cidade", "max-width: 150px")
+                                <th>Estado</th>
+                                @header("situacao", "Situação", "max-width: 150px")
+                                @header("categoria", "Categoria", "max-width: 150px")
+                                @header("producaoBiogasAno", "Produção de biogas anual", "max-width: 150px")
+                                @header("escala", "Escala de produção", "max-width: 150px")
+                                <th>Porte</th>
+                                @header("anoDeInicioOperacao", "Ano", "max-width: 150px")
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for(unidade <- currentPage.getList) {
+                                <tr>
+                                    <td><a href="@routes.UnidadeController.telaDetalhe(unidade.getId)">@unidade.getCodigo</a></td>
+                                    <td>@unidade.getMunicipio.getNome</td>
+                                    <td>@unidade.getMunicipio.getEstado.getNome</td>
+                                    <td>@unidade.getSituacao.getNome</td>
+                                    <td>@unidade.getCategoria.getNome</td>
+                                    <td>@String.format("%.0f", unidade.getProducaoBiogasAno)</td>
+                                    <td>@unidade.getEscala.getLegenda</td>
+                                    @if(unidade.getEscala.getIntervalo == 1) {
+                                        <td><span class="label label-success">Pequeno</span></td>
+                                    }
+                                    @if(unidade.getEscala.getIntervalo == 2) {
+                                        <td><span class="label label-warning">Médio</span></td>
+                                    }
+                                    @if(unidade.getEscala.getIntervalo == 3) {
+                                        <td><span class="label label-primary">Grande</span></td>
+                                    }
+                                    <td>@unidade.getAnoDeInicioOperacao</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            @*INICIO - Linha da paginacao*@
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
+                        Visualizando @currentPage.getDisplayXtoYofZ(" até ", " total ")</div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="dataTables_paginate paging_simple_numbers pull-right">
+                        <ul class="pagination">
+                            @if(currentPage.hasPrev) {
+                            <li class="paginate_button previous">
+                                <a href="@link(currentPage.getPageIndex - 1, null)">Anterior</a>
+                            </li>
+                            } else {
+                            <li class="paginate_button previous disabled">
+                                <a>Anterior</a>
+                            </li>
+                            }
+                            @if(currentPage.hasNext) {
+                            <li class="paginate_button next">
+                                <a href="@link(currentPage.getPageIndex + 1, null)">Próximo</a>
+                            </li>
+                            } else {
+                            <li class="paginate_button next disabled">
+                                <a>Próximo</a>
+                            </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            @*FIM - Linha da paginacao*@
+            }
+        </div>
+    </div>
+</div>
+
+}
+
+<div id="modalCSV" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabelCSV">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@Messages("app.title")</h4>
+            </div>
+            @form(routes.UnidadeController.salvarCSV(), 'enctype -> "multipart/form-data") {
+                <div class="modal-body">
+                    <h4>Cadastrar unidade a partir de um arquivo CSV</h4>
+                    <p>Para funcionar corretamente, devemos respeitar o formato o arquivo.</p>
+                    <p>Apenas sera cadastrado Unidade com <strong>Código</strong> novo.</p>
+                    @arquivocsv(listForm("csv"), label = "Arquivo")
+                </div>
+                <br >
+                <div class="modal-footer">
+                    <input data-loading-text="Loading..." id="btnEnviar" type="submit" value="Enviar" class="btn btn-success">
+                </div>
+            }
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div id="modalExportarCSV" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabelExportCsv">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@Messages("app.title")</h4>
+            </div>
+
+            <div class="modal-body">
+                <p>Deseja exportar todas as Unidades para um arquivo <strong>CSV</strong>?</p>
+                <p>Ao Selecionar "Exportar" o processo de download vai iniciar em seguida.</p>
+            </div>
+            <br>
+            <div class="modal-footer">
+                <a id="exportarCSV" type="button" class="btn btn-success" href="@routes.UnidadeController.exportar()"><i class="fa fa-download" aria-hidden="true"></i> Exportar</a>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div id="modalExportarExcel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabelExportCsv">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@Messages("app.title")</h4>
+            </div>
+
+            <div class="modal-body">
+                <p>Deseja exportar todas as Unidades para um arquivo <strong>Excel</strong>?</p>
+                <p>Ao Selecionar "Exportar" o processo de download vai iniciar em seguida.</p>
+            </div>
+            <br>
+            <div class="modal-footer">
+                <a id="exportarExcel" type="button" class="btn btn-success" href="@routes.UnidadeController.exportarExcel()"><i class="fa fa-download" aria-hidden="true"></i> Exportar</a>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        const table = document.getElementsByTagName('table')[0];
+
+        if (table != undefined) {
+            resizableGrid(table);
+        }
+
+        $('#exportarCSV').click(function() {
+            $('#modalExportarCSV').modal('hide');
+        });
+
+        $('#exportarExcel').click(function() {
+            $('#modalExportarExcel').modal('hide');
+        });
+
+    });
+</script>

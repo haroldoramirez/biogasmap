@@ -1,0 +1,17 @@
+
+Building Project Image
+# docker build -t "egima/docker-play"
+
+Show images
+# docker images
+
+Run in Development Mode
+docker run -i -p 9000:9000 egima/docker-play activator run
+
+#
+We are now ready to load the Play application from the browser using the URL http://196.168.99.101:9000.
+
+
+Run in Production Mode
+docker run -i -v /c/Users/currentuser/:/root/ egima/docker-play activator clean stage
+docker run -i -p 9000:9000 egima/docker-play docker-play -Dplay.crypto.secret = 0123456789

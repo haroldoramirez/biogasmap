@@ -1,0 +1,21 @@
+.modal-mesmalinha {display: inline;}
+
+.popup-label {line-height: unset;}
+
+h3 {
+    font-size: 14px;
+    margin-bottom: 1px;
+    margin-top: -15px;
+    border-bottom: 1px solid #cccccc;
+}
+
+.linha-modal {
+	 font-size: 13px;
+}
+
+.mapa-modal {
+    border: 0;
+	height: 55px;
+	display:inline;
+	background-color: #fff;
+}
