@@ -4,13 +4,14 @@
 # --- !Ups
 
 create table categoria (
-  id                            bigserial not null,
+  id                            bigint not null,
   nome                          varchar(60) not null,
   constraint pk_categoria primary key (id)
 );
+create sequence categoria_seq;
 
 create table contador (
-  id                            bigserial not null,
+  id                            bigint not null,
   csv                           integer,
   excel                         integer,
   pdf                           integer,
@@ -18,27 +19,30 @@ create table contador (
   notatecnica                   integer,
   constraint pk_contador primary key (id)
 );
+create sequence contador_seq;
 
 create table escala (
-  id                            bigserial not null,
+  id                            bigint not null,
   valor                         bigint,
   intervalo                     bigint,
   legenda                       varchar(255),
   porte                         bigint,
   constraint pk_escala primary key (id)
 );
+create sequence escala_seq;
 
 create table estado (
-  id                            bigserial not null,
+  id                            bigint not null,
   ibge_code                     bigint,
   nome                          varchar(255),
   sigla                         varchar(255),
   regiao                        varchar(255),
   constraint pk_estado primary key (id)
 );
+create sequence estado_seq;
 
 create table log (
-  id                            bigserial not null,
+  id                            bigint not null,
   mensagem                      varchar(500) not null,
   navegador                     varchar(100),
   versao                        varchar(100),
@@ -46,23 +50,26 @@ create table log (
   data_cadastro                 timestamp not null,
   constraint pk_log primary key (id)
 );
+create sequence log_seq;
 
 create table municipio (
-  id                            bigserial not null,
+  id                            bigint not null,
   nome                          varchar(255),
   uf                            varchar(255),
   estado_id                     bigint,
   constraint pk_municipio primary key (id)
 );
+create sequence municipio_seq;
 
 create table situacao (
-  id                            bigserial not null,
+  id                            bigint not null,
   nome                          varchar(60) not null,
   constraint pk_situacao primary key (id)
 );
+create sequence situacao_seq;
 
 create table unidade (
-  id                            bigserial not null,
+  id                            bigint not null,
   codigo                        integer not null,
   ano_de_inicio_operacao        varchar(255) not null,
   biogas_para_energia_termica   boolean not null,
@@ -70,8 +77,8 @@ create table unidade (
   biogas_para_energia_mecanica  boolean not null,
   biogas_para_biometano         boolean not null,
   valor_estimado                boolean not null,
-  latitude                      float not null,
-  longitude                     float not null,
+  latitude                      double not null,
+  longitude                     double not null,
   producao_substrato_dia        float not null,
   producao_substrato_ano        float not null,
   producao_biogas_dia           float not null,
@@ -87,9 +94,10 @@ create table unidade (
   constraint uq_unidade_codigo unique (codigo),
   constraint pk_unidade primary key (id)
 );
+create sequence unidade_seq;
 
 create table usuario (
-  id                            bigserial not null,
+  id                            bigint not null,
   nome                          varchar(80) not null,
   email                         varchar(60) not null,
   senha                         varchar(255) not null,
@@ -102,6 +110,7 @@ create table usuario (
   constraint uq_usuario_email unique (email),
   constraint pk_usuario primary key (id)
 );
+create sequence usuario_seq;
 
 alter table municipio add constraint fk_municipio_estado_id foreign key (estado_id) references estado (id) on delete restrict on update restrict;
 create index ix_municipio_estado_id on municipio (estado_id);
@@ -136,21 +145,30 @@ drop index if exists ix_unidade_categoria_id;
 alter table unidade drop constraint if exists fk_unidade_municipio_id;
 drop index if exists ix_unidade_municipio_id;
 
-drop table if exists categoria cascade;
+drop table if exists categoria;
+drop sequence if exists categoria_seq;
 
-drop table if exists contador cascade;
+drop table if exists contador;
+drop sequence if exists contador_seq;
 
-drop table if exists escala cascade;
+drop table if exists escala;
+drop sequence if exists escala_seq;
 
-drop table if exists estado cascade;
+drop table if exists estado;
+drop sequence if exists estado_seq;
 
-drop table if exists log cascade;
+drop table if exists log;
+drop sequence if exists log_seq;
 
-drop table if exists municipio cascade;
+drop table if exists municipio;
+drop sequence if exists municipio_seq;
 
-drop table if exists situacao cascade;
+drop table if exists situacao;
+drop sequence if exists situacao_seq;
 
-drop table if exists unidade cascade;
+drop table if exists unidade;
+drop sequence if exists unidade_seq;
 
-drop table if exists usuario cascade;
+drop table if exists usuario;
+drop sequence if exists usuario_seq;
 
