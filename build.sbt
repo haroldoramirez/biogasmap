@@ -5,7 +5,7 @@ version := "1.0"
 import com.github.play2war.plugin._
 
 //WAR plugins
-Play2WarPlugin.play2WarSettings
+//Play2WarPlugin.play2WarSettings
 
 //Servlet 3.1: Tomcat 8, Wildfly 8, Glassfish 4, Jetty 9, ...
 //Play2WarKeys.servletVersion := "3.1"
@@ -14,7 +14,7 @@ Play2WarPlugin.play2WarSettings
 //Play2WarKeys.servletVersion := "3.0"
 
 //Servlet 2.5: Tomcat 6, JBoss AS 5/6, JBoss EAP 5, Glassfish 2, Jetty 7, ...
-Play2WarKeys.servletVersion := "2.5"
+//Play2WarKeys.servletVersion := "3.1"
 
 //Aplication with Twitter Plugin
 //lazy val module = (project in file("module")).enablePlugins(PlayJava)
@@ -30,7 +30,8 @@ libraryDependencies ++= Seq(
   cache,
   javaWs,
   filters,
-  "org.postgresql" % "postgresql" % "42.2.23",
+  //"org.postgresql" % "postgresql" % "42.2.23",
+  "org.postgresql" % "postgresql" % "42.7.2",
   "com.typesafe.play" %% "play-mailer" % "4.0.0",
   "org.julienrf" %% "play-jsmessages" % "2.0.0",
   "commons-io" % "commons-io" % "2.4",
