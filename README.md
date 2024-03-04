@@ -1,5 +1,7 @@
 # Biogasmap
 
+## Projeto desenvolvido quando trabalhava no CIB.
+
 ### Versão
 * **1.0.0**
   * Initial core
